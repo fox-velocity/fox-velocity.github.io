@@ -110,6 +110,30 @@
         .stock-info p {
             margin: 5px 0;
         }
+        .table-container {
+            margin-top: 20px;
+        }
+        .table-container table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .table-container th, .table-container td {
+            border: 1px solid #333;
+            padding: 8px;
+            text-align: left;
+        }
+        .table-container th {
+            background-color: #333;
+        }
+        .table-container td {
+            background-color: #1e1e1e;
+        }
+        .positive {
+            color: green;
+        }
+        .negative {
+            color: red;
+        }
     </style>
 </head>
 <body>
@@ -176,16 +200,50 @@
         <!-- Nouveau bloc de résultats avec écrêtage 5% -->
         <div class="results" id="resultsWithCapping">
             <h2>Avec écrêtage 5%</h2>
-            <p id="cappedFinalTotalInvested">Total investi : -</p>
-            <p id="cappedFinalNumberOfPayments">Nombre de versements mensuels : -</p>
-            <p id="cappedFinalStockChangePercentage">Évolution de l'action : -</p>
-            <p id="cappedFinalPortfolioValue">Valeur finale du portefeuille : -</p>
-            <p id="cappedFinalGainLossPercentage">Gain/Perte : -</p>
-            <p id="cappedFinalMaxLossAmount">Montant de moins-value potentielle maximale : -</p>
-            <p id="cappedFinalMaxGainAmount">Montant de plus-value potentielle maximale : -</p>
-            <p id="cappedDatesAndAmounts">Dates et montants écrêtés : -</p>
-            <p id="cappedSecuredGains">Montant des plus-values sécurisées : -</p>
-            <p id="cappedFinalResult">Résultat final : -</p>
+            <div class="table-container">
+                <table>
+                    <tr>
+                        <th>Total investi</th>
+                        <td id="cappedFinalTotalInvested">-</td>
+                    </tr>
+                    <tr>
+                        <th>Nombre de versements mensuels</th>
+                        <td id="cappedFinalNumberOfPayments">-</td>
+                    </tr>
+                    <tr>
+                        <th>Évolution de l'action</th>
+                        <td id="cappedFinalStockChangePercentage">-</td>
+                    </tr>
+                    <tr>
+                        <th>Valeur finale du portefeuille</th>
+                        <td id="cappedFinalPortfolioValue">-</td>
+                    </tr>
+                    <tr>
+                        <th>Gain/Perte</th>
+                        <td id="cappedFinalGainLossPercentage">-</td>
+                    </tr>
+                    <tr>
+                        <th>Montant de moins-value potentielle maximale</th>
+                        <td id="cappedFinalMaxLossAmount">-</td>
+                    </tr>
+                    <tr>
+                        <th>Montant de plus-value potentielle maximale</th>
+                        <td id="cappedFinalMaxGainAmount">-</td>
+                    </tr>
+                    <tr>
+                        <th>Dates et montants écrêtés</th>
+                        <td id="cappedDatesAndAmounts">-</td>
+                    </tr>
+                    <tr>
+                        <th>Montant des plus-values sécurisées</th>
+                        <td id="cappedSecuredGains">-</td>
+                    </tr>
+                    <tr>
+                        <th>Résultat final</th>
+                        <td id="cappedFinalResult">-</td>
+                    </tr>
+                </table>
+            </div>
         </div>
 
         <!-- Nouveau conteneur pour le graphique avec écrêtage 5% -->
@@ -625,16 +683,29 @@
             const finalGainLossAmount = finalPortfolioValue - totalInvested;
             const stockChangePercentage = ((lastPrice - filteredData[0].price) / filteredData[0].price) * 100;
 
-            document.getElementById('cappedFinalTotalInvested').innerHTML = `Total investi : <span style="color: ${finalGainLossPercentage >= 0 ? 'green' : 'red'}">${totalInvested.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ' ')} ${currencySymbol}</span>`;
-            document.getElementById('cappedFinalNumberOfPayments').innerHTML = `Nombre de versements mensuels : ${numberOfPayments} mois soit ${Math.floor(numberOfPayments / 12)} ans et ${numberOfPayments % 12} mois`;
-            document.getElementById('cappedFinalStockChangePercentage').innerHTML = `Évolution de l'action :  <span style="color: ${stockChangePercentage >= 0 ? 'green' : 'red'}">${stockChangePercentage.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ' ')} %</span>`;
-            document.getElementById('cappedFinalPortfolioValue').innerHTML = `Valeur finale du portefeuille : <span style="color: ${finalGainLossPercentage >= 0 ? 'green' : 'red'}">${finalPortfolioValue.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ' ')} ${currencySymbol}</span> au ${filteredData[filteredData.length - 1].date.toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' })}`;
-            document.getElementById('cappedFinalGainLossPercentage').innerHTML = `Gain/Perte : <span style="color: ${finalGainLossPercentage >= 0 ? 'green' : 'red'}">${finalGainLossPercentage.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ' ')} %</span> au ${filteredData[filteredData.length - 1].date.toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' })} soit <span style="color: ${finalGainLossAmount >= 0 ? 'green' : 'red'}">${finalGainLossAmount.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ' ')} ${currencySymbol}</span>`;
-            document.getElementById('cappedFinalMaxLossAmount').innerHTML = `Montant de moins-value potentielle maximale : <span style="color: red;">-${Math.abs(maxLossAmount).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ' ')} ${currencySymbol}</span> soit : <span style="color: red;">-${Math.abs(maxLossPercentage).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ' ')} %</span> de l'investissement au : ${new Date(maxLossDate).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' })}`;
-            document.getElementById('cappedFinalMaxGainAmount').innerHTML = `Montant de plus-value potentielle maximale : <span style="color: green;">${maxGainAmount.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ' ')} ${currencySymbol}</span> soit : <span style="color: green;">${maxGainPercentage.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ' ')} %</span> de l'investissement au : ${new Date(maxGainDate).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' })}`;
-            document.getElementById('cappedDatesAndAmounts').innerHTML = `Dates et montants écrêtés : ${cappedDatesAndAmounts.map(item => `<span style="color: green;">${item.date}: ${item.amount} ${currencySymbol}</span>`).join(', ')}`;
-            document.getElementById('cappedSecuredGains').innerHTML = `Montant des plus-values sécurisées : <span style="color: green;">${securedGains.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ' ')} ${currencySymbol}</span>`;
-            document.getElementById('cappedFinalResult').innerHTML = `Résultat final : <span style="color: ${finalGainLossPercentage >= 0 ? 'green' : 'red'}">${(finalPortfolioValue + securedGains).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ' ')} ${currencySymbol}</span> soit <span style="color: ${finalGainLossPercentage >= 0 ? 'green' : 'red'}">${((finalPortfolioValue + securedGains - totalInvested) / totalInvested * 100).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ' ')} %</span>`;
+            document.getElementById('cappedFinalTotalInvested').innerHTML = `<span class="${finalGainLossPercentage >= 0 ? 'positive' : 'negative'}">${totalInvested.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ' ')} ${currencySymbol}</span>`;
+            document.getElementById('cappedFinalNumberOfPayments').innerHTML = `${numberOfPayments} mois soit ${Math.floor(numberOfPayments / 12)} ans et ${numberOfPayments % 12} mois`;
+            document.getElementById('cappedFinalStockChangePercentage').innerHTML = `<span class="${stockChangePercentage >= 0 ? 'positive' : 'negative'}">${stockChangePercentage.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ' ')} %</span>`;
+            document.getElementById('cappedFinalPortfolioValue').innerHTML = `<span class="${finalGainLossPercentage >= 0 ? 'positive' : 'negative'}">${finalPortfolioValue.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ' ')} ${currencySymbol}</span> au ${filteredData[filteredData.length - 1].date.toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' })}`;
+            document.getElementById('cappedFinalGainLossPercentage').innerHTML = `<span class="${finalGainLossPercentage >= 0 ? 'positive' : 'negative'}">${finalGainLossPercentage.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ' ')} %</span> au ${filteredData[filteredData.length - 1].date.toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' })} soit <span class="${finalGainLossAmount >= 0 ? 'positive' : 'negative'}">${finalGainLossAmount.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ' ')} ${currencySymbol}</span>`;
+            document.getElementById('cappedFinalMaxLossAmount').innerHTML = `<span class="negative">-${Math.abs(maxLossAmount).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ' ')} ${currencySymbol}</span> soit : <span class="negative">-${Math.abs(maxLossPercentage).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ' ')} %</span> de l'investissement au : ${new Date(maxLossDate).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' })}`;
+            document.getElementById('cappedFinalMaxGainAmount').innerHTML = `<span class="positive">${maxGainAmount.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ' ')} ${currencySymbol}</span> soit : <span class="positive">${maxGainPercentage.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ' ')} %</span> de l'investissement au : ${new Date(maxGainDate).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' })}`;
+            document.getElementById('cappedDatesAndAmounts').innerHTML = `
+                <table>
+                    <tr>
+                        <th>Date</th>
+                        <th>Montant écrêté</th>
+                    </tr>
+                    ${cappedDatesAndAmounts.map(item => `
+                        <tr>
+                            <td>${item.date}</td>
+                            <td class="positive">${item.amount} ${currencySymbol}</td>
+                        </tr>
+                    `).join('')}
+                </table>
+            `;
+            document.getElementById('cappedSecuredGains').innerHTML = `<span class="positive">${securedGains.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ' ')} ${currencySymbol}</span>`;
+            document.getElementById('cappedFinalResult').innerHTML = `<span class="${finalGainLossPercentage >= 0 ? 'positive' : 'negative'}">${(finalPortfolioValue + securedGains).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ' ')} ${currencySymbol}</span> soit <span class="${finalGainLossPercentage >= 0 ? 'positive' : 'negative'}">${((finalPortfolioValue + securedGains - totalInvested) / totalInvested * 100).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ' ')} %</span>`;
 
             // Mettre à jour le graphique avec écrêtage 5%
             updateCappedInvestmentChart(filteredData.map(data => data.date.toISOString().split('T')[0]), cappedPortfolioValues, portfolioPlusSecuredValues);
