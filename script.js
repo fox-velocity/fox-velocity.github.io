@@ -87,8 +87,15 @@ document.getElementById('searchInput').addEventListener('input', async function(
     const query = this.value.trim();
     if (!query) {
         document.getElementById('suggestions').style.display = 'none';
+       
+        document.getElementById('results').style.display = 'none';
+        document.getElementById('resultsWithCapping').style.display = 'none';
         return;
     }
+     // Reset chart containers
+    document.getElementById('results').style.display = 'none';
+    document.getElementById('resultsWithCapping').style.display = 'none';
+    
     const suggestionsContainer = document.getElementById('suggestions');
     suggestionsContainer.innerHTML = "Chargement...";
     suggestionsContainer.style.display = 'block';
@@ -108,30 +115,47 @@ document.getElementById('searchInput').addEventListener('input', async function(
     } catch (error) {
         console.error("Erreur lors de la recherche : ", error);
         suggestionsContainer.innerHTML = "Erreur lors de la recherche.";
+    }finally{
+         // Affiche les conteneurs si le champ de recherche n'est pas vide et que la recherche a abouti
+       if (query) {
+           document.getElementById('evolutionChartContainer').style.display = 'block';
+           document.getElementById('investmentChartContainer').style.display = 'block';
+           document.getElementById('results').style.display = 'block';
+           document.getElementById('resultsWithCapping').style.display = 'block';
+       }
     }
 });
 
 // Fonction pour sélectionner un symbole
-function selectSymbol(symbol, name, exchange, type, sector, industry) {
-    selectedSymbol = symbol;
-    document.getElementById('searchInput').value = symbol;
-    document.getElementById('suggestions').style.display = 'none';
-    // Déduire la devise en fonction de la place de cotation
-    const currency = exchangeToCurrency[exchange] || 'N/A';
-    currencySymbol = currencySymbols[currency] || currency;
-    // Afficher les informations de l'action
-    document.getElementById('stockName').innerText = name;
-    document.getElementById('stockSymbol').innerText = symbol;
-    document.getElementById('stockExchange').innerText = exchange;
-    document.getElementById('stockCurrency').innerText = currencySymbol;
-    document.getElementById('stockType').innerText = type;
-    document.getElementById('stockSector').innerText = sector;
-    document.getElementById('stockIndustry').innerText = industry;
-    document.getElementById('stockInfo').style.display = 'block';
-    // Mettre à jour le symbole de la devise pour le montant mensuel investi
-    document.getElementById('currencySymbolLabel').innerText = currencySymbol;
-    fetchData(); //Appel à fetchData après avoir sélectionné le symbole
-}
+ function selectSymbol(symbol, name, exchange, type, sector, industry) {
+     selectedSymbol = symbol;
+     document.getElementById('searchInput').value = symbol;
+     document.getElementById('suggestions').style.display = 'none';
+     document.getElementById('ModeEmploie').style.display = 'none';
+     
+     
+     document.getElementById('evolutionChartContainer').style.display = 'block';
+     document.getElementById('investmentChartContainer').style.display = 'block';
+     document.getElementById('download-button').style.display = 'block';
+     document.getElementById('results').style.display = 'block';
+     document.getElementById('resultsWithCapping').style.display = 'block';
+     // Déduire la devise en fonction de la place de cotation
+     const currency = exchangeToCurrency[exchange] || 'N/A';
+     currencySymbol = currencySymbols[currency] || currency;
+     // Afficher les informations de l'action
+     document.getElementById('stockName').innerText = name;
+     document.getElementById('stockSymbol').innerText = symbol;
+     document.getElementById('stockExchange').innerText = exchange;
+     document.getElementById('stockCurrency').innerText = currencySymbol;
+     document.getElementById('stockType').innerText = type;
+     document.getElementById('stockIndustry').innerText = industry;
+     document.getElementById('stockInfo').style.display = 'block';
+
+     // Mettre à jour le symbole de la devise pour le montant mensuel investi
+     document.getElementById('currencySymbolLabel').innerText = currencySymbol;
+     fetchData(); //Appel à fetchData après avoir sélectionné le symbole
+ }
+
 
 async function fetchData() {
     if (!selectedSymbol) {
@@ -546,7 +570,6 @@ function generateFileName() {
 }
 
 // Fonction pour générer un fichier Excel
-// Fonction pour générer un fichier Excel
 function generateExcelFile(chartData, cappedDatesAndAmounts) {
     // En-têtes en anglais
     const headers = [
@@ -562,6 +585,7 @@ function generateExcelFile(chartData, cappedDatesAndAmounts) {
     // Ajouter la deuxième ligne d'en-têtes en français
     XLSX.utils.sheet_add_aoa(ws, [frenchHeaders], { origin: 'A2' });
 
+   
     // Préparer les données pour la feuille de calcul
     const data = chartData.labels.map((label, index) => ({
         date: label,

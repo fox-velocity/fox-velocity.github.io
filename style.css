@@ -21,6 +21,7 @@ body {
     background-color: var(--background-color);
     color: var(--text-color);
     transition: all 0.3s ease;
+   
 }
 
 /* fond dela division principal */
@@ -31,8 +32,16 @@ body {
     padding: 20px;
     border-radius: 1rem;
     box-shadow: 0 0 10px rgba(0,0,0,0.5);
+   
 }
-
+/* Ajout pour cacher initialement les blocs résultats */
+.results,
+#resultsWithCapping,
+#evolutionChartContainer,
+#investmentChartContainer,
+.download-button {
+    display: none;
+}
 
 select, input, button {
     padding: 8px;
@@ -271,16 +280,19 @@ align-items: center;
 
 
 }
+#investmentChartContainer,
 #evolutionChartContainer,
-#investmentChartContainer {
-    width: 100%; /* Prend toute la largeur disponible du parent */
+#valeursDateMontant
+{
+    width: 100%;
     margin-top: 20px;
     padding: 10px;
     border: 1px solid #333;
     border-radius: 0.5rem;
     background-color: #1e1e1e00;
-     box-sizing: border-box; /* Ajout de cette propriété pour éviter le dépassement du conteneur */
+     box-sizing: border-box;
 }
+
 
 #evolutionChartContainer canvas,
 #investmentChartContainer canvas {
@@ -318,7 +330,12 @@ align-items: center;
     box-sizing: border-box;
     padding: 0.5rem; 
   }
-
+  #evolutionChartContainer canvas,
+  #investmentChartContainer canvas {
+    width: 100% !important; /* !important pour forcer la prise en compte */
+    height: 250px !important;
+    display: block;
+  }
   /* Ajout des styles pour agrandir la police */
   body {
     font-size: 1rem; /* Taille de base de la police */
@@ -330,9 +347,7 @@ align-items: center;
        font-size: 1.2rem;  /* Titres h2 */
    }
    
-   p {
-       font-size: 1.2rem;  /* Paragraphes */
-   }
+ 
 
   .table-container th:first-child, .table-container td:first-child {
     width: auto; /* La largeur se définie automatiquement */
