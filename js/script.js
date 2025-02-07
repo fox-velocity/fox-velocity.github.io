@@ -1,5 +1,4 @@
 // script.js
-import { fetchYahooData } from './modules/api.js';
 import { updateEvolutionChart, updateInvestmentChart, updateSavingsChart } from './modules/charts.js';
 import { calculateInvestmentData } from './modules/data.js';
 import { updateStockInfo, updateResultsDisplay, updateSecuredGainsTable, displaySuggestions, showLoadingIndicator, setElementVisibility } from './modules/dom.js';
@@ -106,8 +105,17 @@ document.getElementById('searchInput').addEventListener('input', function () {
         suggestionsContainer.innerHTML = "Chargement...";
         setElementVisibility('suggestions', true);
         try {
-            const url = `https://query1.finance.yahoo.com/v1/finance/search?q=${query}^`;
-            const yahooData = await fetchYahooData(url);
+            // MODIFICATION IMPORTANTE ICI : Utilisation de l'API Vercel
+            const url = `/api/yahooFinance?q=${query}`;
+
+            // Utilise fetch directement (plus besoin de fetchYahooData)
+            const response = await fetch(url);
+
+            if (!response.ok) {
+                throw new Error(`API error: ${response.status} ${response.statusText}`);
+            }
+
+            const yahooData = await response.json();
             const results = yahooData.quotes;
             displaySuggestions(results);
         } catch (error) {
@@ -120,7 +128,7 @@ document.getElementById('searchInput').addEventListener('input', function () {
 // Sélection d'un symbole
 function selectSymbol(symbol, name, exchange, type, sector, industry) {
     selectedSymbol = symbol;
-    document.getElementById('searchInput').value = name;
+    document.getElementById('searchInput').value = name; // MODIFICATION ICI
     setElementVisibility('suggestions', false);
     setElementVisibility('ModeEmploie', false);
 
@@ -155,7 +163,12 @@ async function fetchData() {
     const monthlyInterestRate = Math.pow(1 + (annualInterestRate), 1 / 12) - 1;
     try {
         const url = `https://query1.finance.yahoo.com/v8/finance/chart/${selectedSymbol}?period1=${startDate}&period2=${endDate}&interval=1mo`;
-        const yahooData = await fetchYahooData(url);
+        const response = await fetch(url);
+
+        if (!response.ok) {
+            throw new Error(`Yahoo Finance API error: ${response.status} ${response.statusText}`);
+        }
+        const yahooData = await response.json();
         console.log('API Response:', yahooData);
         if (!yahooData.chart || !yahooData.chart.result) {
             alert('Aucune donnée disponible pour cet indice.');
