@@ -116,7 +116,7 @@ export async function generatePDF(pdfMake, logoBase64, logoRenardBase64Gris) {
 
     // Création du pdf avec un nom de fichier personnalisé
     const stockData = getStockInfo();
-    const fileName = generateFileName(stockData.stockSymbol);
+    const fileName = generateFileName(stockData.stockName);
     pdfMake.createPdf(docDefinition).download(fileName);
 
     //fonction attente 1 graphique
