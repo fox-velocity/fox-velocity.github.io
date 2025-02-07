@@ -116,7 +116,7 @@ export async function generatePDF(pdfMake, logoBase64, logoRenardBase64Gris) {
 
     // Création du pdf avec un nom de fichier personnalisé
     const stockData = getStockInfo();
-    const fileName = generateFileName(stockData.stockName);
+    const fileName = generateFileName(stockData.stockSymbol);
     pdfMake.createPdf(docDefinition).download(fileName);
 
     //fonction attente 1 graphique
@@ -465,7 +465,7 @@ export async function generatePDF(pdfMake, logoBase64, logoRenardBase64Gris) {
         return number.toFixed(2).replace('.', ',') + ' %';
     }
     // Fonction pour générer le nom du fichier
-    function generateFileName(stockName) {
+    function generateFileName(stockSymbol) {
         const now = new Date();
         const year = now.getFullYear();
         const month = String(now.getMonth() + 1).padStart(2, '0');
@@ -475,7 +475,7 @@ export async function generatePDF(pdfMake, logoBase64, logoRenardBase64Gris) {
         const seconds = String(now.getSeconds()).padStart(2, '0');
         const formattedDate = `${year}-${month}-${day}`;
         const formattedTime = `${hours}${minutes}${seconds}`;
-        return `${formattedDate}-${formattedTime}-${stockName}-FoxVelocity.pdf`;
+        return `${formattedDate}-${formattedTime}-${stockSymbol}-FoxVelocity.pdf`;
     }
 }
 window.generatePDF = generatePDF;
