@@ -2,7 +2,8 @@
   "name": "fox-velocity.github.io",
   "version": "1.0.0",
   "description": "08",
-  "main": "logoBase64.js",
+  "main": "index.html",
+  "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
