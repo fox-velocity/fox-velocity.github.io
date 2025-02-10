@@ -90,6 +90,7 @@ export const exchangeToCurrency = {
     'CBOE': 'USD',
     'IEX': 'USD',
  'Paris': 'EUR',
+   'Francfort': 'EUR',
     'PAR': 'EUR',
     'FRA': 'EUR',
     'GER': 'EUR',
