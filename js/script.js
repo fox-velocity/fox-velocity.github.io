@@ -90,39 +90,39 @@ document.getElementById('endDate').addEventListener('change', function () {
 
 // Recherche de symboles
 document.getElementById('searchInput').addEventListener('input', function () {
-    const query = this.value.trim();
-    clearTimeout(searchTimeout); // Annule le timeout précédent s'il existe
-    if (query.length < 3) {
-        setElementVisibility('suggestions', false);
-        return; // Ne fait rien si moins de 3 caractères
+  const query = this.value.trim();
+  clearTimeout(searchTimeout);
+  if (query.length < 3) {
+    setElementVisibility('suggestions', false);
+    return;
+  }
+  searchTimeout = setTimeout(async () => {
+    if (!query) {
+      setElementVisibility('suggestions', false);
+      return;
     }
-    searchTimeout = setTimeout(async () => {
-        if (!query) {
-            setElementVisibility('suggestions', false);
-            return;
-        }
-        const suggestionsContainer = document.getElementById('suggestions');
-        suggestionsContainer.innerHTML = "Chargement...";
-        setElementVisibility('suggestions', true);
-        try {
-            // MODIFICATION IMPORTANTE ICI : Utilisation de l'API Vercel
-            const url = `/api/yahooFinance?q=${query}`;
+    const suggestionsContainer = document.getElementById('suggestions');
+    suggestionsContainer.innerHTML = "Chargement...";
+    setElementVisibility('suggestions', true);
+    try {
+      const url = `/api/yahooFinance?q=${query}`; // Utilise l'API Vercel pour la recherche
+      const response = await fetch(url);
 
-            // Utilise fetch directement (plus besoin de fetchYahooData)
-            const response = await fetch(url);
+      if (!response.ok) {
+        throw new Error(`API error: ${response.status} ${response.statusText}`);
+      }
 
-            if (!response.ok) {
-                throw new Error(`API error: ${response.status} ${response.statusText}`);
-            }
+      const yahooData = await response.json();
+      const results = yahooData.quotes;
 
-            const yahooData = await response.json();
-            const results = yahooData.quotes;
-            displaySuggestions(results);
-        } catch (error) {
-            console.error("Erreur lors de la recherche : ", error);
-            suggestionsContainer.innerHTML = "Erreur lors de la recherche.";
-        }
-    }, 300); // Délai de 300 ms
+      // Affiche les suggestions, que ce soit un symbole ou un ISIN
+      displaySuggestions(results);
+
+    } catch (error) {
+      console.error("Erreur lors de la recherche : ", error);
+      suggestionsContainer.innerHTML = "Erreur lors de la recherche.";
+    }
+  }, 300);
 });
 
 // Sélection d'un symbole
