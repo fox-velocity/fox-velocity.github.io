@@ -89,6 +89,7 @@ export const exchangeToCurrency = {
     'BATS': 'USD',
     'CBOE': 'USD',
     'IEX': 'USD',
+ 'PARIS': 'EUR'
     'PAR': 'EUR',
     'FRA': 'EUR',
     'GER': 'EUR',
@@ -99,6 +100,7 @@ export const exchangeToCurrency = {
     'LIS': 'EUR',
     'DUB': 'EUR',
     'PNK': 'EUR',
+'Londres': 'GBP',
     'LSE': 'GBP',
     'AIM': 'GBP',
     'TSE': 'JPY',
