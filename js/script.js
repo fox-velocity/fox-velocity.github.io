@@ -222,7 +222,7 @@ async function fetchData() {
         }
       }
       const finalAmountFix3 = cumulativeSavingsFix3;
-      const totalInterestFix3 = finalAmountFix3 - totalInvestmentsFix3;
+      const totalInterestFix3 = totalInvestmentsFix3;
       const lastInvestment = chartData.investments[chartData.investments.length - 1]
       const lastGainTauxFixe = cumulativeSavingsFix3 - lastInvestment;
   
@@ -263,7 +263,7 @@ async function fetchData() {
  */
 function displaySuggestions(results) {
     const suggestionsContainer = document.getElementById('suggestions');
-    suggestionsContainer.innerHTML = ''; // Efface les suggestions précédentes
+    suggestionsContainer.innerHTML = '';
     setElementVisibility('suggestions', true);
 
     if (!results || results.length === 0) {
@@ -276,7 +276,7 @@ function displaySuggestions(results) {
         const li = document.createElement('li');
         li.style.cursor = 'pointer';
         li.onclick = function () {
-            selectSymbol(result.symbol, result.longname || result.shortname, result.exch, result.typeDisp, result.sector, result.industry);
+            selectSymbol(result.symbol, result.longname || result.shortname, result.exchDisp, result.typeDisp, result.sector, result.industry);
         };
 
         // Affiche le nom de la société et le symbole (ou l'ISIN)
