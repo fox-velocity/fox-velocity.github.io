@@ -237,7 +237,7 @@ export const exchangeToCurrency = {
     'VSE': 'VUV',
     'NOUMEA': 'XPF',
     'FKSE': 'FKP',
-    'SHSE': 'SHP'
+    'SHSE': 'SHP',
 
     'XETRA': 'EUR', // Plateforme de trading allemande
     'SIX': 'CHF',    // Bourse suisse
