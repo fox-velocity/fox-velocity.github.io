@@ -129,29 +129,32 @@ document.getElementById('searchInput').addEventListener('input', function () {
 // Sélection d'un symbole
 function selectSymbol(symbol, name, exchange, type, sector, industry) {
     selectedSymbol = symbol;
-    document.getElementById('searchInput').value = name; // MODIFICATION ICI
+    document.getElementById('searchInput').value = name;
     setElementVisibility('suggestions', false);
     setElementVisibility('ModeEmploie', false);
 
     const currency = exchangeToCurrency[exchange] || 'N/A';
     currencySymbol = currencySymbols[currency] || currency;
 
- console.log("selectSymbol: Informations sur l'action:", {
+    // Information sur la devise
+    const exchDisp =  exchange;
+
+    // Stock les valeurs dans le log
+    console.log("selectSymbol: Informations sur l'action:", {
         symbol: symbol,
         name: name,
         exchange: exchange,
         type: type,
         sector: sector,
         industry: industry,
-        currency: currency,
-        currencySymbol: currencySymbol
+        currencySymbol: currencySymbol,
+        exchDisp: exchDisp
     });
-    
-    updateStockInfo(name, symbol, exchange, currencySymbol, type, industry);
+
+    updateStockInfo(name, symbol, exchDisp, currencySymbol, type, industry);
     fetchData()
 
 }
-
 window.selectSymbol = selectSymbol; // Rend selectSymbol accessible globalement
 
 // Récupération des données
@@ -258,10 +261,9 @@ async function fetchData() {
  * @param {Array} results - Un tableau d'objets représentant les résultats de la recherche.
  *                          Chaque objet doit avoir au moins un 'symbol' et un 'shortname' ou 'longname'.
  */
-
 function displaySuggestions(results) {
     const suggestionsContainer = document.getElementById('suggestions');
-    suggestionsContainer.innerHTML = '';
+    suggestionsContainer.innerHTML = ''; // Efface les suggestions précédentes
     setElementVisibility('suggestions', true);
 
     if (!results || results.length === 0) {
@@ -277,12 +279,8 @@ function displaySuggestions(results) {
             selectSymbol(result.symbol, result.longname || result.shortname, result.exch, result.typeDisp, result.sector, result.industry);
         };
 
-        // Affiche tous les champs du résultat
-        let details = "";
-        for (const key in result) {
-            details += `<div><strong>${key}:</strong> ${result[key]}</div>`;
-        }
-        li.innerHTML = `<strong>${result.longname || result.shortname}</strong> (${result.symbol})<br>${details}`;
+        // Affiche le nom de la société et le symbole (ou l'ISIN)
+        li.innerHTML = `<strong>${result.longname || result.shortname}</strong> (${result.symbol})`;
         ul.appendChild(li);
     });
 
@@ -311,19 +309,19 @@ document.getElementById('monthlyInvestment').addEventListener('input', function 
 
 // Gestion du téléchargement PDF
 async function generatePDFWrapper() {
-    try {
-        await generatePDF(pdfMake, logoBase64, logoRenardBase64Gris); // <-- Ajout de l'image de fond en paramètre
-    } catch (error) {
-        console.error('Erreur lors de la génération du PDF', error);
+        try {
+            await generatePDF(pdfMake, logoBase64, logoRenardBase64Gris); // <-- Ajout de l'image de fond en paramètre
+        } catch (error) {
+            console.error('Erreur lors de la génération du PDF', error);
+        }
     }
-}
-document.getElementById('download-pdf').addEventListener('click', generatePDFWrapper);
+    document.getElementById('download-pdf').addEventListener('click', generatePDFWrapper);
 
-// Rendre generatePDFWrapper accessible globalement
-window.generatePDFWrapper = generatePDFWrapper;
+    // Rendre generatePDFWrapper accessible globalement
+    window.generatePDFWrapper = generatePDFWrapper;
 
-// Gestion du bouton écrétage
-document.querySelector('.toggle-button').addEventListener('click', function () {
+    // Gestion du bouton écrétage
+    document.querySelector('.toggle-button').addEventListener('click', function () {
         var section = document.getElementById("advancedSection");
         section.style.display = section.style.display === "none" ? "block" : "none";
         fetchData(); // recalcul des données
