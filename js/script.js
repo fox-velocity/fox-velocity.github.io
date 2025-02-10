@@ -244,7 +244,11 @@ async function fetchData() {
  * @param {Array} results - Un tableau d'objets représentant les résultats de la recherche.
  *                          Chaque objet doit avoir au moins un 'symbol' et un 'shortname' ou 'longname'.
  */
+
 function displaySuggestions(results) {
+    
+  console.log("displaySuggestions: Results received:", results);
+    
     const suggestionsContainer = document.getElementById('suggestions');
     suggestionsContainer.innerHTML = ''; // Efface les suggestions précédentes
     setElementVisibility('suggestions', true);
