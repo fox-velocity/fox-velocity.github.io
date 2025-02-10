@@ -64,7 +64,7 @@ window.onload = function () {
         .then(data => {
             logoRenardBase64Gris = data;
         })
-        .catch(error => console.error('Error loading logo:', error));
+        .catch(error => console.error('Error loading background image:', error));
 };
 
 // Gestion des changements de date
@@ -90,39 +90,40 @@ document.getElementById('endDate').addEventListener('change', function () {
 
 // Recherche de symboles
 document.getElementById('searchInput').addEventListener('input', function () {
-    const query = this.value.trim();
-    clearTimeout(searchTimeout);
-    if (query.length < 3) {
-        setElementVisibility('suggestions', false);
-        return;
+  const query = this.value.trim();
+  clearTimeout(searchTimeout);
+  if (query.length < 3) {
+    setElementVisibility('suggestions', false);
+    return;
+  }
+  searchTimeout = setTimeout(async () => {
+    if (!query) {
+      setElementVisibility('suggestions', false);
+      return;
     }
-    searchTimeout = setTimeout(async () => {
-        if (!query) {
-            setElementVisibility('suggestions', false);
-            return;
-        }
-        const suggestionsContainer = document.getElementById('suggestions');
-        suggestionsContainer.innerHTML = "Chargement...";
-        setElementVisibility('suggestions', true);
-        try {
-            const url = `/api/yahooFinance?q=${query}`; // Utilise l'API Vercel pour la recherche
-            const response = await fetch(url);
+    const suggestionsContainer = document.getElementById('suggestions');
+    suggestionsContainer.innerHTML = "Chargement...";
+    setElementVisibility('suggestions', true);
+    try {
+      // URL de recherche Yahoo Finance adaptée pour les ISIN
+      const url = `/api/yahooFinanceISIN?q=${encodeURIComponent(query)}`;
 
-            if (!response.ok) {
-                throw new Error(`API error: ${response.status} ${response.statusText}`);
-            }
+      const response = await fetch(url);
 
-            const yahooData = await response.json();
-            const results = yahooData.quotes;
+      if (!response.ok) {
+        throw new Error(`API error: ${response.status} ${response.statusText}`);
+      }
 
-            // Affiche les suggestions, que ce soit un symbole ou un ISIN
-            displaySuggestions(results);
+      const yahooData = await response.json();
+      const results = yahooData.quotes;
 
-        } catch (error) {
-            console.error("Erreur lors de la recherche : ", error);
-            suggestionsContainer.innerHTML = "Erreur lors de la recherche.";
-        }
-    }, 300);
+      displaySuggestions(results);
+
+    } catch (error) {
+      console.error("Erreur lors de la recherche : ", error);
+      suggestionsContainer.innerHTML = "Erreur lors de la recherche.";
+    }
+  }, 300);
 });
 
 // Sélection d'un symbole
@@ -143,8 +144,8 @@ window.selectSymbol = selectSymbol; // Rend selectSymbol accessible globalement
 // Récupération des données
 async function fetchData() {
     if (!selectedSymbol) {
-        alert("Veuillez rechercher et sélectionner une valeur avant de continuer.");
-        return;
+      alert("Veuillez rechercher et sélectionner une valeur avant de continuer.");
+      return;
     }
     showLoadingIndicator(true);
     const startDateInput = new Date(document.getElementById('startDate').value);
@@ -161,94 +162,90 @@ async function fetchData() {
     const annualInterestRate = parseFloat(document.getElementById('interestRate').value) || 0.02;
     const monthlyInterestRate = Math.pow(1 + (annualInterestRate), 1 / 12) - 1;
     try {
-        // MODIFICATION IMPORTANTE : Utilisation de l'API Vercel
-        const symbol = selectedSymbol; // Stock le selectedSymbol dans une variable
-        const period1 = startDate;
-        const period2 = endDate;
-        const interval = "1mo";
-
-        // Utilise une nouvelle route d'API Vercel (ex: /api/yahooChartData)
-        const url = `/api/yahooChartData?symbol=${symbol}&period1=${period1}&period2=${period2}&interval=${interval}`;
-
-        const response = await fetch(url);
-
-        if (!response.ok) {
-            throw new Error(`Yahoo Finance API error: ${response.status} ${response.statusText}`);
+      // MODIFICATION IMPORTANTE : Utilisation de l'API Vercel
+      const symbol = selectedSymbol; // Stock le selectedSymbol dans une variable
+      const period1 = startDate;
+      const period2 = endDate;
+      const interval = "1mo";
+  
+      // Utilise une nouvelle route d'API Vercel (ex: /api/yahooChartData)
+      const url = `/api/yahooChartData?symbol=${symbol}&period1=${period1}&period2=${period2}&interval=${interval}`;
+  
+      const response = await fetch(url);
+  
+      if (!response.ok) {
+        throw new Error(`Yahoo Finance API error: ${response.status} ${response.statusText}`);
+      }
+      const yahooData = await response.json();
+      console.log('API Response:', yahooData);
+      if (!yahooData.chart || !yahooData.chart.result) {
+        alert('Aucune donnée disponible pour cet indice.');
+        return;
+      }
+      const result = yahooData.chart.result[0];
+      const timestamps = result.timestamp;
+      const prices = result.indicators.quote[0].close;
+      const { chartData, cappedDatesAndAmountsWithInterest, results } = calculateInvestmentData(timestamps, prices, initialInvestment, monthlyInvestment, cappingPercentage, minCappingAmount, monthlyInterestRate, annualInterestRate);
+      updateResultsDisplay(results, currencySymbol);
+      updateSecuredGainsTable(cappedDatesAndAmountsWithInterest, currencySymbol)
+      updateEvolutionChart(chartData.labels, chartData.prices);
+      updateInvestmentChart(chartData.labels, chartData.investments, chartData.portfolio, chartData.portfolioValueEcreteAvecGain);
+  
+      let cumulativeSavingsFix3 = 0;
+      let savingsDataFix3 = [];
+      let totalInvestmentsFix3 = 0;
+  
+      for (let i = 0; i < chartData.labels.length; i++) {
+        totalInvestmentsFix3 += chartData.investments[i];
+        if (i === 0) {
+          cumulativeSavingsFix3 = chartData.investments[i];
+          savingsDataFix3.push(0);
+        } else {
+          cumulativeSavingsFix3 = cumulativeSavingsFix3 * (1 + monthlyInterestRate) + (chartData.investments[i] - chartData.investments[i - 1]);
+          savingsDataFix3.push(cumulativeSavingsFix3 - chartData.investments[i]);
         }
-        const yahooData = await response.json();
-        console.log('API Response:', yahooData);
-        if (!yahooData.chart || !yahooData.chart.result) {
-            alert('Aucune donnée disponible pour cet indice.');
-            return;
-        }
-        const result = yahooData.chart.result[0];
-        const timestamps = result.timestamp;
-        const prices = result.indicators.quote[0].close;
-        const { chartData, cappedDatesAndAmountsWithInterest, results } = calculateInvestmentData(timestamps, prices, initialInvestment, monthlyInvestment, cappingPercentage, minCappingAmount, monthlyInterestRate, annualInterestRate);
-        updateResultsDisplay(results, currencySymbol);
-        updateSecuredGainsTable(cappedDatesAndAmountsWithInterest, currencySymbol)
-        updateEvolutionChart(chartData.labels, chartData.prices);
-        updateInvestmentChart(chartData.labels, chartData.investments, chartData.portfolio, chartData.portfolioValueEcreteAvecGain);
-
-        let cumulativeSavingsFix3 = 0;
-        let savingsDataFix3 = [];
-        let totalInvestmentsFix3 = 0;
-
-        for (let i = 0; i < chartData.labels.length; i++) {
-            totalInvestmentsFix3 += chartData.investments[i];
-            if (i === 0) {
-                cumulativeSavingsFix3 = chartData.investments[i];
-                savingsDataFix3.push(0);
-            } else {
-                cumulativeSavingsFix3 = cumulativeSavingsFix3 * (1 + monthlyInterestRate) + (chartData.investments[i] - chartData.investments[i - 1]);
-                savingsDataFix3.push(cumulativeSavingsFix3 - chartData.investments[i]);
-            }
-        }
-        const finalAmountFix3 = cumulativeSavingsFix3;
-        const totalInterestFix3 = finalAmountFix3 - totalInvestmentsFix3;
-        const lastInvestment = chartData.investments[chartData.investments.length - 1]
-        const lastGainTauxFixe = cumulativeSavingsFix3 - lastInvestment;
-
-        updateSavingsChart(chartData.labels, chartData.investments, chartData.portfolio, monthlyInterestRate, cumulativeSavingsFix3, lastInvestment, savingsDataFix3);
-
-        // Mettre à jour l'affichage du taux d'intérêt
-        const interestRateValue = document.getElementById('interestRate').value;
-        document.getElementById('totalInterest').textContent = (parseFloat(interestRateValue) * 100).toFixed(2).replace('.', ',') + ' ' + '%';
-
-        document.getElementById('last-cumulative-savings').textContent = formatNumber(finalAmountFix3.toFixed(2).replace('.', ',')) + ' ' + currencySymbol;
-        document.getElementById('last-investment').textContent = formatNumber(lastInvestment.toFixed(2).replace('.', ',')) + ' ' + currencySymbol;
-        document.getElementById('gain-taux-fixe').textContent = formatNumber(lastGainTauxFixe.toFixed(2).replace('.', ',')) + ' ' + currencySymbol;
-
-        // Afficher les sections de résultat et les boutons de téléchargement ici
-        setElementVisibility('resultsWithCapping', true);
-        setElementVisibility('evolutionChartContainer', true);
-        setElementVisibility('investmentChartContainer', true);
-        setElementVisibility('results', true);
-        setElementVisibility('savingsChartContainer', true);
-        setElementVisibility('resultsTauxFix', true);
-        setElementVisibility('BoutonTelechargement', document.getElementById('resultsTauxFix').style.display !== 'none');
-
-        // Stocker les données pour le fichier excel
-        excelData = chartData;
-        excelCappedDatesAndAmounts = cappedDatesAndAmountsWithInterest;
+      }
+      const finalAmountFix3 = cumulativeSavingsFix3;
+      const totalInterestFix3 = finalAmountFix3 - totalInvestmentsFix3;
+      const lastInvestment = chartData.investments[chartData.investments.length - 1]
+      const lastGainTauxFixe = cumulativeSavingsFix3 - lastInvestment;
+  
+      updateSavingsChart(chartData.labels, chartData.investments, chartData.portfolio, monthlyInterestRate, cumulativeSavingsFix3, lastInvestment, savingsDataFix3);
+  
+      // Mettre à jour l'affichage du taux d'intérêt
+      const interestRateValue = document.getElementById('interestRate').value;
+      document.getElementById('totalInterest').textContent = (parseFloat(interestRateValue) * 100).toFixed(2).replace('.', ',') + ' ' + '%';
+  
+      document.getElementById('last-cumulative-savings').textContent = formatNumber(finalAmountFix3.toFixed(2).replace('.', ',')) + ' ' + currencySymbol;
+      document.getElementById('last-investment').textContent = formatNumber(lastInvestment.toFixed(2).replace('.', ',')) + ' ' + currencySymbol;
+      document.getElementById('gain-taux-fixe').textContent = formatNumber(lastGainTauxFixe.toFixed(2).replace('.', ',')) + ' ' + currencySymbol;
+  
+      // Afficher les sections de résultat et les boutons de téléchargement ici
+      setElementVisibility('resultsWithCapping', true);
+      setElementVisibility('evolutionChartContainer', true);
+      setElementVisibility('investmentChartContainer', true);
+      setElementVisibility('results', true);
+      setElementVisibility('savingsChartContainer', true);
+      setElementVisibility('resultsTauxFix', true);
+      setElementVisibility('BoutonTelechargement', document.getElementById('resultsTauxFix').style.display !== 'none');
+  
+      // Stocker les données pour le fichier excel
+      excelData = chartData;
+      excelCappedDatesAndAmounts = cappedDatesAndAmountsWithInterest;
     } catch (error) {
-        console.error('Erreur lors de la récupération des données :', error);
-        alert('Erreur lors de la récupération des données. Veuillez réessayer.');
+      console.error('Erreur lors de la récupération des données :', error);
+      alert('Erreur lors de la récupération des données. Veuillez réessayer.');
     } finally {
-        showLoadingIndicator(false);
+      showLoadingIndicator(false);
     }
-}
+  }
 
-// Affiche les suggestions de recherche.
 /**
+ * Affiche les suggestions de recherche.
  * @param {Array} results - Un tableau d'objets représentant les résultats de la recherche.
  *                          Chaque objet doit avoir au moins un 'symbol' et un 'shortname' ou 'longname'.
  */
-
 function displaySuggestions(results) {
-    
-  console.log("displaySuggestions: Results received:", results);
-    
     const suggestionsContainer = document.getElementById('suggestions');
     suggestionsContainer.innerHTML = ''; // Efface les suggestions précédentes
     setElementVisibility('suggestions', true);
