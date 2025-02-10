@@ -262,27 +262,62 @@ document.getElementById('monthlyInvestment').addEventListener('input', function 
 
 // Gestion du téléchargement PDF
 async function generatePDFWrapper() {
-    try {
-        await generatePDF(pdfMake, logoBase64, logoRenardBase64Gris); // <-- Ajout de l'image de fond en paramètre
-    } catch (error) {
-        console.error('Erreur lors de la génération du PDF', error);
+        try {
+            await generatePDF(pdfMake, logoBase64, logoRenardBase64Gris); // <-- Ajout de l'image de fond en paramètre
+        } catch (error) {
+            console.error('Erreur lors de la génération du PDF', error);
+        }
     }
-}
-document.getElementById('download-pdf').addEventListener('click', generatePDFWrapper);
+    document.getElementById('download-pdf').addEventListener('click', generatePDFWrapper);
 
-// Rendre generatePDFWrapper accessible globalement
-window.generatePDFWrapper = generatePDFWrapper;
+    // Rendre generatePDFWrapper accessible globalement
+    window.generatePDFWrapper = generatePDFWrapper;
 
-// Gestion du bouton écrétage
-document.querySelector('.toggle-button').addEventListener('click', function () {
-    var section = document.getElementById("advancedSection");
-    section.style.display = section.style.display === "none" ? "block" : "none";
-    fetchData(); // recalcul des données
-});
-// Exporter les fonctions nécessaires pour les tests
-export { selectSymbol, fetchData, downloadExcel, toggleTheme };
-window.fetchData = fetchData;
-window.toggleTheme = toggleTheme; //  ajout pour rendre la fonction accesible globalement
-// Gestionnaire d'événement pour le bouton de téléchargement Excel
-const downloadButton = document.getElementById('download-button');
-downloadButton.addEventListener('click', downloadExcel);
+    // Gestion du bouton écrétage
+    document.querySelector('.toggle-button').addEventListener('click', function () {
+        var section = document.getElementById("advancedSection");
+        section.style.display = section.style.display === "none" ? "block" : "none";
+        fetchData(); // recalcul des données
+    });
+    /**
+     * Affiche les suggestions de recherche.
+     * @param {Array} results - Un tableau d'objets représentant les résultats de la recherche.
+     *                          Chaque objet doit avoir au moins un 'symbol' et un 'shortname' ou 'longname'.
+     */
+    function displaySuggestions(results) {
+        const suggestionsContainer = document.getElementById('suggestions');
+        suggestionsContainer.innerHTML = ''; // Efface les suggestions précédentes
+        setElementVisibility('suggestions', true);
+
+        if (!results || results.length === 0) {
+            suggestionsContainer.innerHTML = "Aucun résultat trouvé.";
+            return;
+        }
+
+        const ul = document.createElement('ul');
+        results.forEach(result => {
+            const li = document.createElement('li');
+            li.style.cursor = 'pointer';
+            li.onclick = function () {
+                selectSymbol(result.symbol, result.longname || result.shortname, result.exch, result.typeDisp, result.sector, result.industry);
+            };
+
+            // Affiche le nom de la société et le symbole (ou l'ISIN)
+            li.innerHTML = `<strong>${result.longname || result.shortname}</strong> (${result.symbol})`;
+            ul.appendChild(li);
+        });
+
+        suggestionsContainer.appendChild(ul);
+    }
+    // Exporter les fonctions nécessaires pour les tests
+    export {
+        selectSymbol,
+        fetchData,
+        downloadExcel,
+        toggleTheme
+    };
+    window.fetchData = fetchData;
+    window.toggleTheme = toggleTheme; //  ajout pour rendre la fonction accesible globalement
+    // Gestionnaire d'événement pour le bouton de téléchargement Excel
+    const downloadButton = document.getElementById('download-button');
+    downloadButton.addEventListener('click', downloadExcel);
