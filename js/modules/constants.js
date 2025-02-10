@@ -98,6 +98,7 @@ export const exchangeToCurrency = {
     'Amsterdam': 'EUR',
     'Lisbonne': 'EUR',
     'Dublin': 'EUR',
+    'Düsseldorf': 'EUR',
     'Prague': 'CZK',
     'Varsovie': 'PLN',
     'Budapest': 'HUF',
