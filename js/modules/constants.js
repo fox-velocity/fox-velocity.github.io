@@ -238,4 +238,11 @@ export const exchangeToCurrency = {
     'NOUMEA': 'XPF',
     'FKSE': 'FKP',
     'SHSE': 'SHP'
+
+    'XETRA': 'EUR', // Plateforme de trading allemande
+    'SIX': 'CHF',    // Bourse suisse
+    'AEX': 'EUR',    // Indice de la bourse d'Amsterdam
+    'BEL': 'EUR',    // Indice de la bourse de Bruxelles
+    'PSI': 'EUR',    // Indice de la bourse de Lisbonne
+    'ISEQ': 'EUR',   // Indice de la bourse de Dublin
 };
