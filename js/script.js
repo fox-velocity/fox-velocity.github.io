@@ -135,6 +135,18 @@ function selectSymbol(symbol, name, exchange, type, sector, industry) {
 
     const currency = exchangeToCurrency[exchange] || 'N/A';
     currencySymbol = currencySymbols[currency] || currency;
+
+ console.log("selectSymbol: Informations sur l'action:", {
+        symbol: symbol,
+        name: name,
+        exchange: exchange,
+        type: type,
+        sector: sector,
+        industry: industry,
+        currency: currency,
+        currencySymbol: currencySymbol
+    });
+    
     updateStockInfo(name, symbol, exchange, currencySymbol, type, industry);
     fetchData()
 
