@@ -141,7 +141,6 @@ function selectSymbol(symbol, name, exchange, type, sector, industry) {
 window.selectSymbol = selectSymbol; // Rend selectSymbol accessible globalement
 
 // Récupération des données
-
 async function fetchData() {
     if (!selectedSymbol) {
       alert("Veuillez rechercher et sélectionner une valeur avant de continuer.");
@@ -279,6 +278,7 @@ async function generatePDFWrapper() {
         section.style.display = section.style.display === "none" ? "block" : "none";
         fetchData(); // recalcul des données
     });
+
     /**
      * Affiche les suggestions de recherche.
      * @param {Array} results - Un tableau d'objets représentant les résultats de la recherche.
@@ -309,6 +309,7 @@ async function generatePDFWrapper() {
 
         suggestionsContainer.appendChild(ul);
     }
+
     // Exporter les fonctions nécessaires pour les tests
     export {
         selectSymbol,
