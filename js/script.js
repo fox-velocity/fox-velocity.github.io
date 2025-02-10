@@ -151,6 +151,7 @@ function selectSymbol(symbol, name, exchange, type, sector, industry) {
     fetchData()
 
 }
+
 window.selectSymbol = selectSymbol; // Rend selectSymbol accessible globalement
 
 // Récupération des données
@@ -257,9 +258,10 @@ async function fetchData() {
  * @param {Array} results - Un tableau d'objets représentant les résultats de la recherche.
  *                          Chaque objet doit avoir au moins un 'symbol' et un 'shortname' ou 'longname'.
  */
+
 function displaySuggestions(results) {
     const suggestionsContainer = document.getElementById('suggestions');
-    suggestionsContainer.innerHTML = ''; // Efface les suggestions précédentes
+    suggestionsContainer.innerHTML = '';
     setElementVisibility('suggestions', true);
 
     if (!results || results.length === 0) {
@@ -275,8 +277,12 @@ function displaySuggestions(results) {
             selectSymbol(result.symbol, result.longname || result.shortname, result.exch, result.typeDisp, result.sector, result.industry);
         };
 
-        // Affiche le nom de la société et le symbole (ou l'ISIN)
-        li.innerHTML = `<strong>${result.longname || result.shortname}</strong> (${result.symbol})`;
+        // Affiche tous les champs du résultat
+        let details = "";
+        for (const key in result) {
+            details += `<div><strong>${key}:</strong> ${result[key]}</div>`;
+        }
+        li.innerHTML = `<strong>${result.longname || result.shortname}</strong> (${result.symbol})<br>${details}`;
         ul.appendChild(li);
     });
 
