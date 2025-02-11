@@ -223,6 +223,7 @@ export const exchangeToCurrency = {
     'SET': 'THB',
     'HOSE': 'VND',
     'KRX': 'KRW',
+   'Séoul':'KRW'
     'TWSE': 'TWD',
     'TSE': 'JPY',
     'HKEX': 'HKD',
@@ -239,6 +240,7 @@ export const exchangeToCurrency = {
     'FKSE': 'FKP',
     'SHSE': 'SHP',
 
+   
     'XETRA': 'EUR', // Plateforme de trading allemande
     'SIX': 'CHF',    // Bourse suisse
     'AEX': 'EUR',    // Indice de la bourse d'Amsterdam
