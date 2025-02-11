@@ -223,7 +223,7 @@ export const exchangeToCurrency = {
     'SET': 'THB',
     'HOSE': 'VND',
     'KRX': 'KRW',
-   'Séoul':'KRW'
+   'Séoul':'KRW',
     'TWSE': 'TWD',
     'TSE': 'JPY',
     'HKEX': 'HKD',
