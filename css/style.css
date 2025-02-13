@@ -275,6 +275,12 @@ button:hover {
     display: flex;
 }
 
+.header-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
 .theme-switch {
     margin-left: auto; 
     width: 3rem;
