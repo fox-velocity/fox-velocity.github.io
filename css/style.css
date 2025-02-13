@@ -274,16 +274,11 @@ button:hover {
 .theme-switch.theme-toggle{
     display: flex;
 }
-.header-container {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-.header-container h2 {
-    margin: 0;
-}
+
 .theme-switch {
-   margin-left: auto; 
+    position: fixed;
+    top: 20px;
+    right: 20px;
     width: 3rem;
     height: 3rem;
     padding: 0;
