@@ -27,7 +27,31 @@
 <body>
     <div class="container">
         <div>
+            <div class="header-container">
             <h1>Simulateur de Rendement d'Investissement</h1>
+            <!-- Ajout du commutateur de thème -->
+            <button class="theme-switch" onclick="toggleTheme()">
+                <svg class="theme-icon sun-icon" viewBox="0 0 24 24" style="display: none;"
+                    xmlns="http://www.w3.org/2000/svg">
+                    <!-- Cercle central pour le soleil -->
+                    <circle cx="12" cy="12" r="5" fill="currentColor" />
+                    <!-- Rayons du soleil -->
+                    <line x1="12" y1="2" x2="12" y2="5" stroke="currentColor" stroke-width="2" />
+                    <line x1="12" y1="19" x2="12" y2="22" stroke="currentColor" stroke-width="2" />
+                    <line x1="2" y1="12" x2="5" y2="12" stroke="currentColor" stroke-width="2" />
+                    <line x1="19" y1="12" x2="22" y2="12" stroke="currentColor" stroke-width="2" />
+                    <line x1="4.22" y1="4.22" x2="6.34" y2="6.34" stroke="currentColor" stroke-width="2" />
+                    <line x1="17.66" y1="17.66" x2="19.78" y2="19.78" stroke="currentColor" stroke-width="2" />
+                    <line x1="4.22" y1="19.78" x2="6.34" y2="17.66" stroke="currentColor" stroke-width="2" />
+                    <line x1="17.66" y1="6.34" x2="19.78" y2="4.22" stroke="currentColor" stroke-width="2" />
+                </svg>
+                <svg class="theme-icon moon-icon" viewBox="0 0 24 24">
+                    <path fill="currentColor"
+                        d="M12 3c-4.97 0-9 4.03-9 9s4.03 9 9 9 9-4.03 9-9c0-.46-.04-.92-.1-1.36-.98 1.37-2.58 2.26-4.4 2.26-3.03 0-5.5-2.47-5.5-5.5 0-1.82.89-3.42 2.26-4.4-.44-.06-.9-.1-1.36-.1z">
+                    </path>
+                </svg>
+            </button>
+        </div>
             <div id="ModeEmploie">
                 <p>Recherche : Entrez le nom ou le symbole d'une action dans le champ de recherche, puis sélectionnez la proposition qui correspond.</p>
                 <p>Période : Choisissez la date de début et de fin de la période d'investissement que vous souhaitez analyser.</p>
@@ -272,25 +296,7 @@
                 <p>Les performances passées des instruments financiers ne garantissent en aucun cas leurs performances futures. Ce simulateur est destiné à fournir une estimation basée sur des données historiques et ne prend pas en compte les événements imprévus, les évolutions du marché ou les frais associés aux investissements. Il est important de noter que les résultats obtenus ne constituent pas un conseil en investissement et que tout investissement comporte des risques, y compris la perte partielle ou totale du capital. Il est fortement recommandé de consulter un professionnel, tel qu'un conseiller en gestion de patrimoine (CGP), avant de prendre toute décision d'investissement, afin d'obtenir des conseils personnalisés en fonction de votre profil et de vos objectifs financiers.</p>
             </div>
 
-            <!-- Ajout du commutateur de thème -->
-            <button class="theme-switch theme-toggle">
-                <svg class="theme-icon sun-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <!-- Cercle central pour le soleil -->
-                    <circle cx="12" cy="12" r="5" fill="currentColor" />
-                    <!-- Rayons du soleil -->
-                    <line x1="12" y1="2" x2="12" y2="5" stroke="currentColor" stroke-width="2" />
-                    <line x1="12" y1="19" x2="12" y2="22" stroke="currentColor" stroke-width="2" />
-                    <line x1="2" y1="12" x2="5" y2="12" stroke="currentColor" stroke-width="2" />
-                    <line x1="19" y1="12" x2="22" y2="12" stroke="currentColor" stroke-width="2" />
-                    <line x1="4.22" y1="4.22" x2="6.34" y2="6.34" stroke="currentColor" stroke-width="2" />
-                    <line x1="17.66" y1="17.66" x2="19.78" y2="19.78" stroke="currentColor" stroke-width="2" />
-                    <line x1="4.22" y1="19.78" x2="6.34" y2="17.66" stroke="currentColor" stroke-width="2" />
-                    <line x1="17.66" y1="6.34" x2="19.78" y2="4.22" stroke="currentColor" stroke-width="2" />
-                </svg>
-                <svg class="theme-icon moon-icon" viewBox="0 0 24 24">
-                    <path fill="currentColor" d="M12 3c-4.97 0-9 4.03-9 9s4.03 9 9 9 9-4.03 9-9c0-.46-.04-.92-.1-1.36-.98 1.37-2.58 2.26-4.4 2.26-3.03 0-5.5-2.47-5.5-5.5 0-1.82.89-3.42 2.26-4.4-.44-.06-.9-.1-1.36-.1z"></path>
-                </svg>
-            </button>
+          
         </div>
     </div>
 </body>
