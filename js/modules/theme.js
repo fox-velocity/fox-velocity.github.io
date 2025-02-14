@@ -2,7 +2,7 @@
 
 export function initializeTheme() {
     const body = document.body;
-    body.setAttribute('data-theme', 'dark');
+    body.setAttribute('data-theme', 'light');
      const moonIcon = document.querySelector('.moon-icon');
     moonIcon.style.display = 'none';
 }
